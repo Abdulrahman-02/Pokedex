@@ -1,4 +1,4 @@
-package main
+package repl
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 )
 
 // startRepl implements a simple command-line interface (CLI) for a Pokedex application.
-func startRepl() {
+func StartRepl() {
 	fmt.Println("===== Pokedex Unix CLI =====")
 
 	for {
