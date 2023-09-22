@@ -1,7 +1,16 @@
 package main
 
-import "github.com/Abdulrahman-02/Pokedex/internal/repl"
+import (
+	"time"
+
+	"github.com/Abdulrahman-02/Pokedex/internal/api"
+	"github.com/Abdulrahman-02/Pokedex/internal/repl"
+)
 
 func main() {
-	repl.StartRepl()
+	Client := api.NewClient(10 * time.Second)
+	c := &repl.Config{
+		ApiClient: Client,
+	}
+	repl.StartRepl(c)
 }

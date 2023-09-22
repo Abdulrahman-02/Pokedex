@@ -16,3 +16,13 @@ Portable operating System Interface
 ## ANSI escape code
 
 <https://en.wikipedia.org/wiki/ANSI_escape_code>
+
+## API
+
+<https://pokeapi.co/docs/v2#location-areas>
+
+## JSON
+
+<https://jsonlint.com/>
+
+<https://mholt.github.io/json-to-go/>
