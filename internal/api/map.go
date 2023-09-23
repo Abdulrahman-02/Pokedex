@@ -5,16 +5,20 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/Abdulrahman-02/Pokedex/internal/cache"
 )
 
 const baseURL = "https://pokeapi.co/api/v2"
 
 type Client struct {
 	httpClient http.Client
+	cache      *cache.Cache
 }
 
-func NewClient(timeout time.Duration) Client {
+func NewClient(timeout, cacheInterval time.Duration) Client {
 	return Client{
+		cache: cache.NewCache(cacheInterval),
 		httpClient: http.Client{
 			Timeout: timeout,
 		},
@@ -37,6 +41,16 @@ func (c *Client) GetLocations(pageURL *string) (Locations, error) {
 		url = *pageURL
 	}
 
+	// Check if the data is already in the cache
+	if data, ok := c.cache.Get(url); ok {
+		locations := Locations{}
+		err := json.Unmarshal(data, &locations)
+		if err != nil {
+			return Locations{}, err
+		}
+		return locations, nil
+	}
+
 	res, err := http.Get(url)
 	if err != nil {
 		return Locations{}, err
@@ -52,6 +66,9 @@ func (c *Client) GetLocations(pageURL *string) (Locations, error) {
 	if err != nil {
 		return Locations{}, err
 	}
+
+	// Add the data to the cache
+	c.cache.Add(url, data)
 
 	return locations, nil
 }

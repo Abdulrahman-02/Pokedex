@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	Client := api.NewClient(10 * time.Second)
+	Client := api.NewClient(10*time.Second, time.Minute*5)
 	c := &repl.Config{
 		ApiClient: Client,
 	}
