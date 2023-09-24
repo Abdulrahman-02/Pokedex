@@ -14,32 +14,43 @@ func StartRepl(c *Config) {
 	fmt.Println("===== Pokedex Unix CLI =====")
 
 	// Read the command line
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewScanner(os.Stdin)
 
 	for {
 		fmt.Print("pokedex > ")
+		reader.Scan()
 
-		// Read the input until the first newline
-		cmdString, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+		words := cleanInput(reader.Text())
+		if len(words) == 0 {
+			continue
 		}
 
-		// Trim whitespace from the command string
-		cmdString = strings.TrimSpace(cmdString)
+		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 
 		// Handle the execution of the command
-		command, exists := getCommands()[cmdString]
+		command, exists := getCommands()[commandName]
 
 		if exists {
-			err := command.function(c)
+			err := command.function(c, args...)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 			}
+			continue
 		} else {
 			fmt.Fprintln(os.Stderr, "Command not found")
+			continue
 		}
 	}
+}
+
+func cleanInput(text string) []string {
+	output := strings.ToLower(text)
+	words := strings.Fields(output)
+	return words
 }
 
 type Config struct {
@@ -51,7 +62,7 @@ type Config struct {
 type cliCommand struct {
 	name        string
 	description string
-	function    func(*Config) error
+	function    func(*Config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -80,6 +91,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "displays the previous 20 locations",
 			function:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "displays pokemon names in area",
+			function:    commandExplore,
 		},
 	}
 }
