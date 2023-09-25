@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Pokemon struct {
+type Location struct {
 	EncounterMethodRates []struct {
 		EncounterMethod struct {
 			Name string `json:"name"`
@@ -59,36 +59,35 @@ type Pokemon struct {
 	} `json:"pokemon_encounters"`
 }
 
-func (c *Client) GetPokemon(location string) (Pokemon, error) {
-	url := baseURL + "/location-area/" + location
+func (c *Client) GetLocation(locationName string) (Location, error) {
+	url := baseURL + "/location-area/" + locationName
 	// Data is cached
 	if data, ok := c.cache.Get(url); ok {
-		pokemon := Pokemon{}
-		err := json.Unmarshal(data, &pokemon)
+		location := Location{}
+		err := json.Unmarshal(data, &location)
 		if err != nil {
-			return Pokemon{}, err
+			return Location{}, err
 		}
-		return pokemon, nil
+		return location, nil
 	}
 
 	res, err := http.Get(url)
 	if err != nil {
-		return Pokemon{}, err
+		return Location{}, err
 	}
 	defer res.Body.Close()
 
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		return Pokemon{}, err
+		return Location{}, err
 	}
 
-	pokemon := Pokemon{}
-	err = json.Unmarshal(data, &pokemon)
+	location := Location{}
+	err = json.Unmarshal(data, &location)
 	if err != nil {
-		return Pokemon{}, err
+		return Location{}, err
 	}
-
 	// Add data to the cache
 	c.cache.Add(url, data)
-	return pokemon, nil
+	return location, nil
 }

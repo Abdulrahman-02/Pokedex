@@ -17,7 +17,7 @@ func StartRepl(c *Config) {
 	reader := bufio.NewScanner(os.Stdin)
 
 	for {
-		fmt.Print("pokedex > ")
+		fmt.Print("\033[31m" + "pokedex > " + "\033[0m")
 		reader.Scan()
 
 		words := cleanInput(reader.Text())
@@ -96,6 +96,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "displays pokemon names in area",
 			function:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "catch pokemon",
+			function:    commandCatch,
 		},
 	}
 }

@@ -3,7 +3,10 @@ package repl
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
+
+	"github.com/Abdulrahman-02/Pokedex/internal/api"
 )
 
 func commandHelp(*Config, ...string) error {
@@ -65,15 +68,38 @@ func commandExplore(c *Config, args ...string) error {
 		return errors.New("location name is mandatory")
 	}
 	name := args[0]
-	pokemons, err := c.ApiClient.GetPokemon(name)
+	location, err := c.ApiClient.GetLocation(name)
 	if err != nil {
 		return err
 	}
 	fmt.Printf("Exploring %s ... \n", name)
 	fmt.Println("Found Pokemon: ")
 
-	for _, pokemon := range pokemons.PokemonEncounters {
-		fmt.Println(pokemon.Pokemon.Name)
+	for _, location := range location.PokemonEncounters {
+		fmt.Println(location.Pokemon.Name)
 	}
+	return nil
+}
+
+func commandCatch(c *Config, args ...string) error {
+	if len(args) != 1 {
+		return errors.New("pokemon name is mandatory")
+	}
+	name := args[0]
+	pokemon, err := c.ApiClient.GetPokemon(name)
+	if err != nil {
+		return err
+	}
+
+	chance := rand.Intn(pokemon.BaseExperience)
+	fmt.Printf("Throwing a Pokeball at %s ... \n", name)
+
+	if chance > 50 {
+		fmt.Printf("%s ran away! \n", pokemon.Name)
+		return nil
+	}
+	api.PokemonCaught[pokemon.Name] = pokemon
+	fmt.Printf("%s was caught! \n", pokemon.Name)
+
 	return nil
 }
