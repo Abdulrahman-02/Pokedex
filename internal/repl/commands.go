@@ -127,3 +127,12 @@ func commandInspect(c *Config, args ...string) error {
 	}
 	return nil
 }
+
+func commandPokedex(c *Config, args ...string) error {
+	pokemons := api.PokemonCaught
+	fmt.Println("Your Pokedex")
+	for _, pokemon := range pokemons {
+		fmt.Println(" -", pokemon.Name)
+	}
+	return nil
+}

@@ -107,5 +107,10 @@ func getCommands() map[string]cliCommand {
 			description: "inspect pokemon",
 			function:    commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "show pokemons in pokedex",
+			function:    commandPokedex,
+		},
 	}
 }
