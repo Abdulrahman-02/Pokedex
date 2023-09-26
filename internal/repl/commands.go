@@ -103,3 +103,27 @@ func commandCatch(c *Config, args ...string) error {
 
 	return nil
 }
+
+func commandInspect(c *Config, args ...string) error {
+	if len(args) != 1 {
+		return errors.New("pokemon name is mandatory")
+	}
+	name := args[0]
+	details, ok := api.PokemonCaught[name]
+	if !ok {
+		fmt.Printf("You don't have %s in your Pokedex \n", name)
+		return nil
+	}
+	fmt.Printf("Name: %s \n", details.Name)
+	fmt.Printf("Height: %d \n", details.Height)
+	fmt.Printf("Weight: %d \n", details.Weight)
+	fmt.Printf("Stats: \n")
+	for _, stat := range details.Stats {
+		fmt.Printf("	-%s: %d \n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Printf("Types")
+	for _, typeInfo := range details.Types {
+		fmt.Println("	-", typeInfo.Type.Name)
+	}
+	return nil
+}

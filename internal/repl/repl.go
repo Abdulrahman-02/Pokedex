@@ -102,5 +102,10 @@ func getCommands() map[string]cliCommand {
 			description: "catch pokemon",
 			function:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "inspect pokemon",
+			function:    commandInspect,
+		},
 	}
 }
